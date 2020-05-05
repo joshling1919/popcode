@@ -1,21 +1,11 @@
-import {
-  all,
-  call,
-  debounce,
-  put,
-  select,
-  take,
-  takeEvery,
-} from 'redux-saga/effects';
+import {all, call, debounce, put, take, takeEvery} from 'redux-saga/effects';
 import {userDoneTyping as userDoneTypingAction} from '../actions/ui';
-import {getCurrentProject} from '../selectors';
 import {
   projectExportDisplayed,
   projectExportNotDisplayed,
 } from '../actions/clients';
 import {openWindowWithContent} from '../util';
 import spinnerPageHtml from '../../templates/project-export.html';
-import compileProject from '../util/compileProject';
 
 export function* userDoneTyping() {
   yield put(userDoneTypingAction());
@@ -44,12 +34,6 @@ function* projectExport(
   }
 }
 
-export function* popOutProject() {
-  const project = yield select(getCurrentProject);
-  const {source} = yield call(compileProject, project);
-  yield call(openWindowWithContent, source);
-}
-
 export function* exportProject() {
   yield* projectExport(
     'PROJECT_EXPORTED',
@@ -62,7 +46,6 @@ export function* exportProject() {
 export default function* ui() {
   yield all([
     debounce(1000, 'UPDATE_PROJECT_SOURCE', userDoneTyping),
-    takeEvery('POP_OUT_PROJECT', popOutProject),
     takeEvery('EXPORT_PROJECT', exportProject),
   ]);
 }
