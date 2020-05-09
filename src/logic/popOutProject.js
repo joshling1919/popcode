@@ -8,7 +8,7 @@ export default createLogic({
   async process({getState}) {
     const state = getState();
     const project = getCurrentProject(state);
-    console.log('whats project', project);
+
     const {source} = await compileProject(project);
     openWindowWithContent(source);
   },
